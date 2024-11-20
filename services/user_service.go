@@ -9,6 +9,7 @@ type UserService interface {
 	CreateUser(user *models.User) error
 	GetUser(id int) (*models.User, error)
 	DeleteUser(id int) error
+	DeleteUserHard(id int) error
 }
 
 type userService struct {
@@ -25,6 +26,10 @@ func (us *userService) GetUser(id int) (*models.User, error) {
 
 func (us *userService) DeleteUser(id int) error {
 	return us.repository.DeleteUser(id)
+}
+
+func (us *userService) DeleteUserHard(id int) error {
+	return us.repository.DeleteUserHard(id)
 }
 
 func NewUserService(repository repositories.UserRepository) UserService {

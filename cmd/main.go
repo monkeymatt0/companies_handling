@@ -55,7 +55,7 @@ func main() {
 	r := gin.Default()
 	routes.SetUpRoutes(r, userHandler)
 	fmt.Println(r.Routes())
-	if err6 := r.Run(":8080"); err != nil {
+	if err6 := r.Run(":8080"); err6 != nil {
 		log.Fatalf("Failed to start the server: %v\n", err6)
 	}
 }

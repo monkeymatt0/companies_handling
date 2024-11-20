@@ -10,6 +10,8 @@ func SetUpRoutes(router *gin.Engine, userHandler *handlers.UserHandler) {
 	router.POST("/user", userHandler.CreateUser)
 	router.GET("/user/:id", userHandler.GetUser)
 	router.DELETE("/user/:id", userHandler.DeleteUser)
+	router.DELETE("/user/:id/hard", userHandler.DeleteUserHard)
+
 	router.GET("/companies/:id", nil)
 	userGroup := router.Group("/user")
 	// @todo : Here you will check the user and restrict the access via middlware

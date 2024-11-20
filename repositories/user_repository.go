@@ -12,6 +12,7 @@ type UserRepository interface {
 	CreateUser(user *models.User) error
 	GetUser(id int) (*models.User, error)
 	DeleteUser(id int) error
+	DeleteUserHard(id int) error
 }
 
 type userRepository struct {
@@ -31,6 +32,11 @@ func (ur *userRepository) GetUser(id int) (*models.User, error) {
 
 func (ur *userRepository) DeleteUser(id int) error {
 	err := ur.db.Delete(&models.User{}, id).Error
+	return err
+}
+
+func (ur *userRepository) DeleteUserHard(id int) error {
+	err := ur.db.Unscoped().Delete(&models.User{}, id).Error
 	return err
 }
 

@@ -51,7 +51,7 @@ func (h *UserHandler) GetUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
+	user.Password = ""
 	c.JSON(http.StatusOK, user)
 }
 
@@ -62,6 +62,20 @@ func (h *UserHandler) DeleteUser(c *gin.Context) {
 		return
 	}
 	if err := h.userService.DeleteUser(id); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, id)
+}
+
+func (h *UserHandler) DeleteUserHard(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	if err := h.userService.DeleteUserHard(id); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
