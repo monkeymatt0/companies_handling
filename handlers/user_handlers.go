@@ -38,7 +38,7 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
+	user.Password = ""
 	c.JSON(http.StatusCreated, user)
 }
 
@@ -53,6 +53,7 @@ func (h *UserHandler) GetUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	user.Password = ""
 	c.JSON(http.StatusOK, user)
 }
 
@@ -90,6 +91,11 @@ func (h *UserHandler) LoginUser(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
 		return
 	}
+	u, err := h.userService.GetUserByEmail(user.Email)
+	if err != nil && u == nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
 
 	hashedPassword, err := utils.HashPassword(user.Password)
 	if err != nil {
@@ -103,13 +109,11 @@ func (h *UserHandler) LoginUser(c *gin.Context) {
 		return
 	}
 
-	h.userService.GetUserByEmail(user.Email)
-
 	// Create the JWT claims, which includes the username and standard claims
 	claims := &models.Claims{
 		Email: user.Email,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)), // Set expiration time
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(2 * time.Hour)), // Set expiration time
 		},
 	}
 
@@ -122,11 +126,6 @@ func (h *UserHandler) LoginUser(c *gin.Context) {
 
 	// Setting the http only for the cookie so it's not accesible via javascript
 	c.SetCookie("Bearer", signedToken, 7200, "/", "", false, true)
-	u, err := h.userService.GetUserByEmail(user.Email)
-	if err != nil {
-		c.JSON(http.StatusBadGateway, gin.H{"error": err.Error()})
-		return
-	}
-
+	u.Password = ""
 	c.JSON(http.StatusOK, u)
 }
