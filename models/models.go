@@ -1,4 +1,4 @@
-package internal
+package models
 
 import (
 	"fmt"
@@ -44,9 +44,9 @@ type User struct {
 }
 
 type Company struct {
-	gorm.Model
+	ID                string      `gorm:"id;primarykey"`
 	Name              string      `gorm:"name;not null;unique"`
-	Description       string      `gorm:"description;"`
+	Description       string      `gorm:"description"`
 	AmountOfEmployees uint        `gorm:"amount_of_employees;not null"`
 	Registered        bool        `gorm:"registered;not null"`
 	Type              CompanyType `gorm:"not null"`
