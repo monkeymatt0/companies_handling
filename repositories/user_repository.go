@@ -11,6 +11,7 @@ import (
 type UserRepository interface {
 	CreateUser(user *models.User) error
 	GetUser(id uint64) (*models.User, error)
+	DeleteUser(id uint64) error
 }
 
 type userRepository struct {
@@ -26,6 +27,11 @@ func (ur *userRepository) GetUser(id uint64) (*models.User, error) {
 	var user models.User
 	err := ur.db.Find(&user, id).Error
 	return &user, err
+}
+
+func (ur *userRepository) DeleteUser(id uint64) error {
+	err := ur.db.Delete(&models.User{}, id).Error
+	return err
 }
 
 func NewUserRepository(db *gorm.DB) UserRepository {

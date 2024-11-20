@@ -8,6 +8,7 @@ import (
 type UserService interface {
 	CreateUser(user *models.User) error
 	GetUser(id uint64) (*models.User, error)
+	DeleteUser(id uint64) error
 }
 
 type userService struct {
@@ -20,6 +21,10 @@ func (us *userService) CreateUser(user *models.User) error {
 
 func (us *userService) GetUser(id uint64) (*models.User, error) {
 	return us.repository.GetUser(id)
+}
+
+func (us *userService) DeleteUser(id uint64) error {
+	return us.repository.DeleteUser(id)
 }
 
 func NewUserService(repository repositories.UserRepository) UserService {
