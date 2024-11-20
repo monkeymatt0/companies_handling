@@ -2,8 +2,11 @@ package main
 
 import (
 	"companies_handling/internal"
+	"companies_handling/routes"
+	"fmt"
 	"os"
 
+	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"gopkg.in/yaml.v3"
 	"gorm.io/driver/postgres"
@@ -39,4 +42,8 @@ func main() {
 	if err5 != nil {
 		panic(err5)
 	}
+
+	r := gin.Default()
+	routes.SetUpRoutes(r)
+	fmt.Println(r.Routes())
 }
