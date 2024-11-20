@@ -1,9 +1,13 @@
 package main
 
 import (
+	"companies_handling/handlers"
 	"companies_handling/models"
+	"companies_handling/repositories"
 	"companies_handling/routes"
+	"companies_handling/services"
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -43,7 +47,15 @@ func main() {
 		panic(err5)
 	}
 
+	// Creating the repo, service and handler user will use
+	userRep := repositories.NewUserRepository(db)
+	userService := services.NewUserService(userRep)
+	userHandler := handlers.NewUserHandler(userService)
+
 	r := gin.Default()
-	routes.SetUpRoutes(r)
+	routes.SetUpRoutes(r, userHandler)
 	fmt.Println(r.Routes())
+	if err6 := r.Run(":8080"); err != nil {
+		log.Fatalf("Failed to start the server: %v\n", err6)
+	}
 }

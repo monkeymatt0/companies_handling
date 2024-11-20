@@ -10,8 +10,8 @@ import (
 // GetUser is used to fetch a single user end return it
 type UserRepository interface {
 	CreateUser(user *models.User) error
-	GetUser(id uint64) (*models.User, error)
-	DeleteUser(id uint64) error
+	GetUser(id int) (*models.User, error)
+	DeleteUser(id int) error
 }
 
 type userRepository struct {
@@ -23,13 +23,13 @@ func (ur *userRepository) CreateUser(user *models.User) error {
 	return err
 }
 
-func (ur *userRepository) GetUser(id uint64) (*models.User, error) {
+func (ur *userRepository) GetUser(id int) (*models.User, error) {
 	var user models.User
 	err := ur.db.Find(&user, id).Error
 	return &user, err
 }
 
-func (ur *userRepository) DeleteUser(id uint64) error {
+func (ur *userRepository) DeleteUser(id int) error {
 	err := ur.db.Delete(&models.User{}, id).Error
 	return err
 }

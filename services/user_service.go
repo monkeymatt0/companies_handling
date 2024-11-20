@@ -7,8 +7,8 @@ import (
 
 type UserService interface {
 	CreateUser(user *models.User) error
-	GetUser(id uint64) (*models.User, error)
-	DeleteUser(id uint64) error
+	GetUser(id int) (*models.User, error)
+	DeleteUser(id int) error
 }
 
 type userService struct {
@@ -19,11 +19,11 @@ func (us *userService) CreateUser(user *models.User) error {
 	return us.repository.CreateUser(user)
 }
 
-func (us *userService) GetUser(id uint64) (*models.User, error) {
+func (us *userService) GetUser(id int) (*models.User, error) {
 	return us.repository.GetUser(id)
 }
 
-func (us *userService) DeleteUser(id uint64) error {
+func (us *userService) DeleteUser(id int) error {
 	return us.repository.DeleteUser(id)
 }
 
