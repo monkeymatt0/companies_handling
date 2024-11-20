@@ -2,39 +2,41 @@ package main
 
 import (
 	"companies_handling/internal"
-	"fmt"
-	"io"
 	"os"
-	"strings"
 
+	"github.com/joho/godotenv"
 	"gopkg.in/yaml.v3"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 func main() {
 
-	// Open the config.yaml file for configurations
-	wd, err := os.Getwd()
+	// Reading .env
+	err := godotenv.Load()
 	if err != nil {
 		panic(err)
 	}
-	f := strings.Split(wd, "/")
-	f = f[:len(f)-1]             // Removing the last dir in the past
-	f = append(f, "config.yaml") // Adding the file name as leaf of the path
-	cp := strings.Join(f, "/")   // Join to have the proper position
-	cf, err := os.Open(cp)
-	if err != nil {
-		panic(err)
+	cf, err2 := os.ReadFile("config.yaml")
+	if err2 != nil {
+		panic(err2)
 	}
-	defer cf.Close()
 
-	cb, err := io.ReadAll(cf)
-	if err != nil {
-		panic(err)
-	}
+	cfs := os.Expand(string(cf), os.Getenv)
 	// Decode yaml file
 	var config internal.Config
-	if err := yaml.Unmarshal(cb, &config); err != nil {
-		panic(err)
+	if err3 := yaml.Unmarshal([]byte(cfs), &config); err3 != nil {
+		panic(err3)
 	}
-	fmt.Println(config)
+	// Creating the DSN
+	dsn := config.GetDSN()
+	db, err4 := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	if err4 != nil {
+		panic(err4)
+	}
+	// Performin Migrations
+	err5 := db.AutoMigrate(&internal.User{}, &internal.Company{})
+	if err5 != nil {
+		panic(err5)
+	}
 }

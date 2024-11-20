@@ -1,6 +1,10 @@
 package internal
 
-import "gorm.io/gorm"
+import (
+	"fmt"
+
+	"gorm.io/gorm"
+)
 
 // @remind : Develop models here
 type Config struct {
@@ -13,7 +17,18 @@ type Config struct {
 	}
 }
 
-type CompanyType uint8
+func (c *Config) GetDSN() string {
+	return fmt.Sprintf(
+		"host=%s user=%s password=%s dbname=%s port=%d sslmode=disable",
+		c.Database.Host,
+		c.Database.User,
+		c.Database.Password,
+		c.Database.Name,
+		c.Database.Port,
+	)
+}
+
+type CompanyType uint
 
 const (
 	Corporations CompanyType = iota
@@ -25,7 +40,7 @@ const (
 type User struct {
 	gorm.Model
 	Email    string `gorm:"email;not null;unique"`
-	Password string `gorm:"password:not null"`
+	Password string `gorm:"password;not null"`
 }
 
 type Company struct {
@@ -34,5 +49,5 @@ type Company struct {
 	Description       string      `gorm:"description;"`
 	AmountOfEmployees uint        `gorm:"amount_of_employees;not null"`
 	Registered        bool        `gorm:"registered;not null"`
-	Type              CompanyType `gorm:"type:not null"`
+	Type              CompanyType `gorm:"not null"`
 }
