@@ -8,8 +8,8 @@ import (
 
 type CompanyRepository interface {
 	CreateCompany(company *models.Company) (*string, error)
-	EditComany(company *models.Company) (*models.Company, error)
-	GetCompany(uuid string) (models.Company, error)
+	EditCompany(company *models.Company) (*models.Company, error)
+	GetCompany(uuid string) (*models.Company, error)
 	DeleteCompany(uuid string) error
 }
 
@@ -25,7 +25,7 @@ func (cr *companyRepository) CreateCompany(company *models.Company) (*string, er
 	return &company.ID, err
 }
 
-func (cr *companyRepository) EditComany(company *models.Company) (*models.Company, error) {
+func (cr *companyRepository) EditCompany(company *models.Company) (*models.Company, error) {
 	err := cr.db.Model(&company).Updates(company).Error
 	if err != nil {
 		return nil, err
@@ -33,10 +33,13 @@ func (cr *companyRepository) EditComany(company *models.Company) (*models.Compan
 	return company, nil
 }
 
-func (cr *companyRepository) GetCompany(uuid string) (models.Company, error) {
+func (cr *companyRepository) GetCompany(uuid string) (*models.Company, error) {
 	var company models.Company
 	err := cr.db.Find(&company, uuid).Error
-	return company, err
+	if err != nil {
+		return nil, err
+	}
+	return &company, err
 }
 
 func (cr *companyRepository) DeleteCompany(uuid string) error {

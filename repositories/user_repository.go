@@ -22,10 +22,10 @@ func (ur *userRepository) CreateUser(user *models.User) error {
 	return err
 }
 
-func (ur *userRepository) GetUser(id uint64) (models.User, error) {
+func (ur *userRepository) GetUser(id uint64) (*models.User, error) {
 	var user models.User
 	err := ur.db.Find(&user, id).Error
-	return user, err
+	return &user, err
 }
 
 func NewUserRepository(db *gorm.DB) UserRepository {

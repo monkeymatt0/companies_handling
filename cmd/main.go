@@ -1,7 +1,7 @@
 package main
 
 import (
-	"companies_handling/internal"
+	"companies_handling/models"
 	"companies_handling/routes"
 	"fmt"
 	"os"
@@ -27,7 +27,7 @@ func main() {
 
 	cfs := os.Expand(string(cf), os.Getenv)
 	// Decode yaml file
-	var config internal.Config
+	var config models.Config
 	if err3 := yaml.Unmarshal([]byte(cfs), &config); err3 != nil {
 		panic(err3)
 	}
@@ -38,7 +38,7 @@ func main() {
 		panic(err4)
 	}
 	// Performin Migrations
-	err5 := db.AutoMigrate(&internal.User{}, &internal.Company{})
+	err5 := db.AutoMigrate(&models.User{}, &models.Company{})
 	if err5 != nil {
 		panic(err5)
 	}
