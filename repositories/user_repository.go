@@ -13,6 +13,7 @@ type UserRepository interface {
 	GetUser(id int) (*models.User, error)
 	DeleteUser(id int) error
 	DeleteUserHard(id int) error
+	GetUserByEmail(email string) (*models.User, error)
 }
 
 type userRepository struct {
@@ -27,6 +28,14 @@ func (ur *userRepository) CreateUser(user *models.User) error {
 func (ur *userRepository) GetUser(id int) (*models.User, error) {
 	var user models.User
 	err := ur.db.Find(&user, id).Error
+	user.Password = ""
+	return &user, err
+}
+
+func (ur *userRepository) GetUserByEmail(email string) (*models.User, error) {
+	var user models.User
+	err := ur.db.Where("email = ?", email).Find(&user).Error
+	user.Password = ""
 	return &user, err
 }
 

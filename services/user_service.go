@@ -10,6 +10,7 @@ type UserService interface {
 	GetUser(id int) (*models.User, error)
 	DeleteUser(id int) error
 	DeleteUserHard(id int) error
+	GetUserByEmail(email string) (*models.User, error)
 }
 
 type userService struct {
@@ -22,6 +23,10 @@ func (us *userService) CreateUser(user *models.User) error {
 
 func (us *userService) GetUser(id int) (*models.User, error) {
 	return us.repository.GetUser(id)
+}
+
+func (us *userService) GetUserByEmail(email string) (*models.User, error) {
+	return us.repository.GetUserByEmail(email)
 }
 
 func (us *userService) DeleteUser(id int) error {

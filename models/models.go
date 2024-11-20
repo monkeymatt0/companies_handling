@@ -3,6 +3,7 @@ package models
 import (
 	"fmt"
 
+	"github.com/golang-jwt/jwt/v4"
 	"gorm.io/gorm"
 )
 
@@ -50,4 +51,9 @@ type Company struct {
 	AmountOfEmployees int         `gorm:"amount_of_employees;not null"`
 	Registered        bool        `gorm:"registered;not null"`
 	Type              CompanyType `gorm:"not null"`
+}
+
+type Claims struct {
+	Email string `json:"username"`
+	jwt.RegisteredClaims
 }

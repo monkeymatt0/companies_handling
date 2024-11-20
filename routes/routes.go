@@ -11,6 +11,7 @@ func SetUpRoutes(router *gin.Engine, userHandler *handlers.UserHandler) {
 	router.GET("/user/:id", userHandler.GetUser)
 	router.DELETE("/user/:id", userHandler.DeleteUser)
 	router.DELETE("/user/:id/hard", userHandler.DeleteUserHard)
+	router.POST("/login", userHandler.LoginUser)
 
 	router.GET("/companies/:id", nil)
 	userGroup := router.Group("/user")
