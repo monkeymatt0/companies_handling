@@ -6,7 +6,6 @@ import (
 	"companies_handling/repositories"
 	"companies_handling/routes"
 	"companies_handling/services"
-	"fmt"
 	"log"
 	"os"
 
@@ -58,7 +57,6 @@ func main() {
 
 	r := gin.Default()
 	routes.SetUpRoutes(r, userHandler, companyHandler)
-	fmt.Println(r.Routes())
 	if err6 := r.Run(":8080"); err6 != nil {
 		log.Fatalf("Failed to start the server: %v\n", err6)
 	}
