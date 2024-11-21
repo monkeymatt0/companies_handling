@@ -33,7 +33,7 @@ func (ur *userRepository) GetUser(id int) (*models.User, error) {
 
 func (ur *userRepository) GetUserByEmail(email string) (*models.User, error) {
 	var user models.User
-	err := ur.db.Where("email = ?", email).Find(&user).Error
+	err := ur.db.Unscoped().Where("email = ?", email).Find(&user).Error
 	return &user, err
 }
 

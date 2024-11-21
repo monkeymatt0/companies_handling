@@ -10,20 +10,23 @@ import (
 )
 
 func JwtCheck(c *gin.Context) {
-	tokenString := c.GetHeader("Cookie")
+	tokenString, err := c.Cookie("Bearer")
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization error"})
+		c.Abort()
+		return
+	}
 	if tokenString == "" {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "No Authorization token"})
 		c.Abort()
 		return
 	}
-	tokenString = tokenString[7:] // Removing Bearer=
+	claims := &models.Claims{}
 	token, err := jwt.ParseWithClaims(
 		tokenString,
-		&models.Claims{
-			Email: "matteo@test.com",
-		},
+		claims,
 		func(t *jwt.Token) (interface{}, error) {
-			return os.Getenv("SECRET"), nil
+			return []byte(os.Getenv("SECRET")), nil
 		},
 	)
 	if err != nil || !token.Valid {
