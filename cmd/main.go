@@ -54,8 +54,23 @@ func main() {
 	companyRep := repositories.NewCompanyRepository(db)
 	companyService := services.NewCompanyService(companyRep)
 	companyHandler := handlers.NewCompanyHandler(companyService)
+	mode := os.Getenv("GIN_MODE")
+	if mode == "release" {
+		gin.SetMode(gin.ReleaseMode)
+	} else {
+		gin.SetMode(gin.DebugMode)
+	}
 
 	r := gin.Default()
+	proxy := os.Getenv("TRUSTED_PROXY")
+	if proxy != "" {
+		err := r.SetTrustedProxies([]string{proxy})
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		r.SetTrustedProxies(nil) // Disable proxy trusting if not present in .env file
+	}
 	routes.SetUpRoutes(r, userHandler, companyHandler)
 	if err6 := r.Run(":8080"); err6 != nil {
 		log.Fatalf("Failed to start the server: %v\n", err6)

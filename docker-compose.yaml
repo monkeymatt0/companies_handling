@@ -4,14 +4,17 @@ services:
   db:
     image: postgres:latest
     container_name: pg_companies
+    env_file:
+      - cmd/.env
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
-    ports:
-      - "5432:5432"
     volumes:
       - "postgres_data:/var/lib/postgresql/data"
+    networks:
+      - app_network
+
   app:
     build:
       context: .
@@ -19,11 +22,14 @@ services:
     container_name: app
     ports:
       - "8080:8080"
-    env_file:
-      - cmd/.env
     depends_on:
       - db
-    environment:
-      GIN_MODE: ${MODE}
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge
+
 volumes:
   postgres_data:
