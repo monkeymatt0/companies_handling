@@ -3,6 +3,7 @@ package models
 import (
 	"fmt"
 
+	"github.com/golang-jwt/jwt/v4"
 	"gorm.io/gorm"
 )
 
@@ -28,7 +29,7 @@ func (c *Config) GetDSN() string {
 	)
 }
 
-type CompanyType uint
+type CompanyType int
 
 const (
 	Corporations CompanyType = iota
@@ -39,15 +40,20 @@ const (
 
 type User struct {
 	gorm.Model
-	Email    string `gorm:"email;not null;unique"`
-	Password string `gorm:"password;not null"`
+	Email    string `json:"email" gorm:"email;not null;unique"`
+	Password string `json:"password" gorm:"password;not null"`
 }
 
 type Company struct {
 	ID                string      `gorm:"id;primarykey"`
 	Name              string      `gorm:"name;not null;unique"`
 	Description       string      `gorm:"description"`
-	AmountOfEmployees uint        `gorm:"amount_of_employees;not null"`
+	AmountOfEmployees int         `gorm:"amount_of_employees;not null"`
 	Registered        bool        `gorm:"registered;not null"`
 	Type              CompanyType `gorm:"not null"`
+}
+
+type Claims struct {
+	Email string `json:"username"`
+	jwt.RegisteredClaims
 }
