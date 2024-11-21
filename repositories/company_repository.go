@@ -10,6 +10,7 @@ type CompanyRepository interface {
 	CreateCompany(company *models.Company) (*string, error)
 	EditCompany(company *models.Company) (*models.Company, error)
 	GetCompany(uuid string) (*models.Company, error)
+	GetCompanyUser(id uint, uuid string) (*models.Company, error)
 	DeleteCompany(uuid string) error
 	DeleteCompanyHard(uuid string) error
 }
@@ -39,6 +40,15 @@ func (cr *companyRepository) EditCompany(company *models.Company) (*models.Compa
 func (cr *companyRepository) GetCompany(uuid string) (*models.Company, error) {
 	var company models.Company
 	err := cr.db.Unscoped().Where("id = ?", uuid).First(&company).Error
+	if err != nil {
+		return nil, err
+	}
+	return &company, err
+}
+
+func (cr *companyRepository) GetCompanyUser(id uint, uuid string) (*models.Company, error) {
+	var company models.Company
+	err := cr.db.Unscoped().Where("id = ? AND user_id = ?", uuid, id).First(&company).Error
 	if err != nil {
 		return nil, err
 	}
