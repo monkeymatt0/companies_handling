@@ -4,8 +4,6 @@ services:
   db:
     image: postgres:latest
     container_name: pg_companies
-    env_file:
-      - cmd/.env
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
