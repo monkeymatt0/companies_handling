@@ -14,7 +14,6 @@ func SetUpRoutes(
 ) {
 	router.POST("/users", userHandler.CreateUser)
 	router.POST("/login", userHandler.LoginUser)
-	router.GET("/companies/:uuid", companyHandler.GetCompany)
 
 	userGroup := router.Group("/users")
 	userGroup.Use(middlewares.JwtCheck)
@@ -22,14 +21,11 @@ func SetUpRoutes(
 		userGroup.GET("/:id", userHandler.GetUser)
 		userGroup.DELETE("/:id", userHandler.DeleteUser)
 		userGroup.DELETE("/:id/hard", userHandler.DeleteUserHard)
-	}
 
-	authGroup := router.Group("/")
-	authGroup.Use(middlewares.JwtCheck)
-	{
-		authGroup.POST("/companies", companyHandler.CreateCompany)
-		authGroup.PATCH("/companies/:uuid", companyHandler.EditCompany)
-		authGroup.DELETE("/companies/:uuid", companyHandler.DeleteCompany)
-		authGroup.DELETE("/companies/:uuid/hard", companyHandler.DeleteCompanyHard)
+		userGroup.GET("/:id/companies/:uuid", companyHandler.GetCompany)
+		userGroup.POST("/:id/companies", companyHandler.CreateCompany)
+		userGroup.PATCH("/:id/companies/:uuid", companyHandler.EditCompany)
+		userGroup.DELETE("/:id/companies/:uuid", companyHandler.DeleteCompany)
+		userGroup.DELETE("/:id/companies/:uuid/hard", companyHandler.DeleteCompanyHard)
 	}
 }
