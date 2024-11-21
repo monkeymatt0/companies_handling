@@ -69,7 +69,10 @@ func main() {
 			panic(err)
 		}
 	} else {
-		r.SetTrustedProxies(nil) // Disable proxy trusting if not present in .env file
+		err := r.SetTrustedProxies(nil) // Disable proxy trusting if not present in .env file
+		if err != nil {
+			panic(err)
+		}
 	}
 	routes.SetUpRoutes(r, userHandler, companyHandler)
 	if err6 := r.Run(":8080"); err6 != nil {
