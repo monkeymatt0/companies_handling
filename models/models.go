@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/golang-jwt/jwt/v4"
 	"gorm.io/gorm"
@@ -29,13 +30,13 @@ func (c *Config) GetDSN() string {
 	)
 }
 
-type CompanyType int
+type CompanyType string
 
 const (
-	Corporations CompanyType = iota
-	NonProfit
-	Cooperative
-	SoleProprietorship
+	Corporation        CompanyType = "Corporation"
+	NonProfit          CompanyType = "NonProfit"
+	Cooperative        CompanyType = "Cooperative"
+	SoleProprietorship CompanyType = "SoleProprietorship"
 )
 
 type User struct {
@@ -45,12 +46,15 @@ type User struct {
 }
 
 type Company struct {
-	ID                string      `gorm:"id;primarykey"`
-	Name              string      `gorm:"name;not null;unique"`
-	Description       string      `gorm:"description"`
-	AmountOfEmployees int         `gorm:"amount_of_employees;not null"`
-	Registered        bool        `gorm:"registered;not null"`
-	Type              CompanyType `gorm:"not null"`
+	ID                string      `json:"id" gorm:"id;primarykey" validate:"required,uuid4"`
+	Name              string      `json:"name" gorm:"name;not null;unique" validate:"required,max=15"`
+	Description       string      `json:"description" gorm:"description" validate:"omitempty,max=3000"`
+	AmountOfEmployees int         `json:"amountOfEmployees" gorm:"amount_of_employees;not null" validate:"required,min=1"`
+	Registered        bool        `json:"registered" gorm:"registered;not null" validate:"required"`
+	Type              CompanyType `json:"type" gorm:"not null" validate:"oneof=Corporations NonProfit Cooperative SoleProprietorship"`
+	CreatedAt         time.Time
+	UpdatedAt         time.Time
+	DeletedAt         gorm.DeletedAt `json:"-" gorm:"index"`
 }
 
 type Claims struct {

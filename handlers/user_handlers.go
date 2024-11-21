@@ -92,8 +92,12 @@ func (h *UserHandler) LoginUser(c *gin.Context) {
 		return
 	}
 	u, err := h.userService.GetUserByEmail(user.Email)
-	if err != nil && u == nil {
+	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+	if u.ID == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Email not found"})
 		return
 	}
 

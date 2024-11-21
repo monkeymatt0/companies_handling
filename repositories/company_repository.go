@@ -11,6 +11,7 @@ type CompanyRepository interface {
 	EditCompany(company *models.Company) (*models.Company, error)
 	GetCompany(uuid string) (*models.Company, error)
 	DeleteCompany(uuid string) error
+	DeleteCompanyHard(uuid string) error
 }
 
 type companyRepository struct {
@@ -26,16 +27,18 @@ func (cr *companyRepository) CreateCompany(company *models.Company) (*string, er
 }
 
 func (cr *companyRepository) EditCompany(company *models.Company) (*models.Company, error) {
-	err := cr.db.Model(&company).Updates(company).Error
+	uuid := company.ID
+	company.ID = ""
+	err := cr.db.Unscoped().Where("id = ?", uuid).Updates(company).Error
 	if err != nil {
 		return nil, err
 	}
-	return company, nil
+	return cr.GetCompany(uuid)
 }
 
 func (cr *companyRepository) GetCompany(uuid string) (*models.Company, error) {
 	var company models.Company
-	err := cr.db.Find(&company, uuid).Error
+	err := cr.db.Unscoped().Where("id = ?", uuid).First(&company).Error
 	if err != nil {
 		return nil, err
 	}
@@ -43,7 +46,12 @@ func (cr *companyRepository) GetCompany(uuid string) (*models.Company, error) {
 }
 
 func (cr *companyRepository) DeleteCompany(uuid string) error {
-	err := cr.db.Delete(&models.Company{}, uuid).Error
+	err := cr.db.Where("id = ?", uuid).Delete(&models.Company{}).Error
+	return err
+}
+
+func (cr *companyRepository) DeleteCompanyHard(uuid string) error {
+	err := cr.db.Unscoped().Where("id = ?", uuid).Delete(&models.Company{}).Error
 	return err
 }
 

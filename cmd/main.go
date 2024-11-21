@@ -52,8 +52,12 @@ func main() {
 	userService := services.NewUserService(userRep)
 	userHandler := handlers.NewUserHandler(userService)
 
+	companyRep := repositories.NewCompanyRepository(db)
+	companyService := services.NewCompanyService(companyRep)
+	companyHandler := handlers.NewCompanyHandler(companyService)
+
 	r := gin.Default()
-	routes.SetUpRoutes(r, userHandler)
+	routes.SetUpRoutes(r, userHandler, companyHandler)
 	fmt.Println(r.Routes())
 	if err6 := r.Run(":8080"); err6 != nil {
 		log.Fatalf("Failed to start the server: %v\n", err6)

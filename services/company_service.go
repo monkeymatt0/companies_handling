@@ -10,6 +10,7 @@ type CompanyService interface {
 	EditCompany(company *models.Company) (*models.Company, error)
 	GetCompany(uuid string) (*models.Company, error)
 	DeleteCompany(uuid string) error
+	DeleteCompanyHard(uuid string) error
 }
 
 type companyService struct {
@@ -27,6 +28,9 @@ func (cs *companyService) GetCompany(uuid string) (*models.Company, error) {
 }
 func (cs *companyService) DeleteCompany(uuid string) error {
 	return cs.repository.DeleteCompany(uuid)
+}
+func (cs *companyService) DeleteCompanyHard(uuid string) error {
+	return cs.repository.DeleteCompanyHard(uuid)
 }
 
 func NewCompanyService(repository repositories.CompanyRepository) CompanyService {
