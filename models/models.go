@@ -41,8 +41,9 @@ const (
 
 type User struct {
 	gorm.Model
-	Email    string `json:"email" gorm:"email;not null;unique"`
-	Password string `json:"password" gorm:"password;not null"`
+	Email     string `json:"email" gorm:"email;not null;unique"`
+	Password  string `json:"password" gorm:"password;not null"`
+	Companies []Company
 }
 
 type Company struct {
@@ -55,6 +56,7 @@ type Company struct {
 	CreatedAt         time.Time
 	UpdatedAt         time.Time
 	DeletedAt         gorm.DeletedAt `json:"-" gorm:"index"`
+	UserID            uint
 }
 
 type Claims struct {
